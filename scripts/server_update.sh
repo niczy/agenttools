@@ -19,9 +19,7 @@ while true; do
   # Step 2: Run pnpm build
   cd app
   pnpm install
-  pnpm dev 
-  # Step 3: Run pnpm start in a separate process
-  pnpm start &
+  pnpm dev &
   APP_SERVER_PID=$!
   cd ..
 
