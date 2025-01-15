@@ -36,6 +36,6 @@ while true; do
   sleep 10
 
   # Step 5: Kill the process from step #3
-  kill $SERVER_PID
+  kill $APP_SERVER_PID
   kill $API_SERVER_PID
 done
