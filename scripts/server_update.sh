@@ -1,17 +1,13 @@
 #!/bin/bash
 
 while true; do
-  # Kill process listening on port 3000
-  PID_3000=$(lsof -t -i tcp:3000)
-  if [ -n "$PID_3000" ]; then
-    kill -9 $PID_3000
-  fi
-
-  # Kill process listening on port 3001
-  PID_3001=$(lsof -t -i tcp:3001)
-  if [ -n "$PID_3001" ]; then
-    kill -9 $PID_3001
-  fi
+  # Kill processes listening on ports 3000 and 3001
+  for port in 3000 3001; do
+    PID=$(lsof -t -i tcp:$port)
+    if [ -n "$PID" ]; then
+      kill -9 $PID
+    fi
+  done
 
   # Step 1: Run git pull
   git pull
@@ -32,6 +28,9 @@ while true; do
 
   # Step 4: Wait 10 minutes
   sleep 10
+
+  echo "App Server PID: $APP_SERVER_PID"
+  echo "API Server PID: $API_SERVER_PID"
 
   # Step 5: Kill the process from step #3
   kill $APP_SERVER_PID -9
