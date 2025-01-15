@@ -6,6 +6,8 @@ while true; do
     PID=$(lsof -t -i tcp:$port)
     if [ -n "$PID" ]; then
       kill -9 $PID
+      # Wait for process to be killed
+      sleep 1
     fi
   done
 
@@ -27,12 +29,17 @@ while true; do
   cd ..
 
   # Step 4: Wait 10 minutes
-  sleep 10
+  sleep 600
 
   echo "App Server PID: $APP_SERVER_PID"
   echo "API Server PID: $API_SERVER_PID"
 
-  # Step 5: Kill the process from step #3
-  kill $APP_SERVER_PID -9
-  kill $API_SERVER_PID -9
+  # Step 5: Kill the processes
+  if ps -p $APP_SERVER_PID > /dev/null; then
+    kill -9 $APP_SERVER_PID
+  fi
+  
+  if ps -p $API_SERVER_PID > /dev/null; then
+    kill -9 $API_SERVER_PID
+  fi
 done
