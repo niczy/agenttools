@@ -19,7 +19,7 @@ while true; do
   # Step 2: Run pnpm build
   cd app
   pnpm install
-  pnpm build
+  pnpm dev 
   # Step 3: Run pnpm start in a separate process
   pnpm start &
   APP_SERVER_PID=$!
@@ -36,6 +36,6 @@ while true; do
   sleep 10
 
   # Step 5: Kill the process from step #3
-  kill $APP_SERVER_PID
-  kill $API_SERVER_PID
+  kill $APP_SERVER_PID -9
+  kill $API_SERVER_PID -9
 done
