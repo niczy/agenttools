@@ -2,10 +2,16 @@
 
 while true; do
   # Kill process listening on port 3000
-  lsof -t -i tcp:3000 | xargs kill -9
+  PID_3000=$(lsof -t -i tcp:3000)
+  if [ -n "$PID_3000" ]; then
+    kill -9 $PID_3000
+  fi
 
   # Kill process listening on port 3001
-  lsof -t -i tcp:3001 | xargs kill -9
+  PID_3001=$(lsof -t -i tcp:3001)
+  if [ -n "$PID_3001" ]; then
+    kill -9 $PID_3001
+  fi
 
   # Step 1: Run git pull
   git pull
