@@ -43,20 +43,34 @@ def parse_tool_args(args: dict) -> str:
             
     return ", ".join(arg_parts)
 
-@app.get("/tool_description")
+@app.get("/tool")
 async def get_tool_description(name: str, folder: str):
     """Endpoint to get the tool description from a JSON file."""
     logger.info(f"Received request for tool description: name={name}, folder={folder}")
     try:
+        # Load the function definition from JSON
         with open(f"{tools_path}/{folder}/{name}.json", "r") as f:
-            tool_description = json.load(f)
-        logger.info(f"Successfully retrieved tool description for: name={name}, folder={folder}")
-        return tool_description
+            func_def = json.load(f)
+            
+        # Load the function code
+        with open(f"{tools_path}/{folder}/{name}.py", "r") as f:
+            func_code = f.read()
+            
+        # Build the tool definition
+        tool_def = {
+            "func_def": func_def,
+            "func_code": func_code,
+            "remote_only": False  # Default to False
+        }
+        
+        logger.info(f"Successfully built tool definition for: name={name}, folder={folder}")
+        return tool_def
+        
     except FileNotFoundError:
-        logger.error(f"Tool description file not found: {tools_path}/{folder}/{name}.json")
-        raise HTTPException(status_code=404, detail="Tool description file not found")
+        logger.error(f"Tool files not found: {tools_path}/{folder}/{name}")
+        raise HTTPException(status_code=404, detail="Tool files not found")
     except Exception as e:
-        logger.error(f"Error reading tool description file: {str(e)}")
+        logger.error(f"Error building tool definition: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/tool_call")
